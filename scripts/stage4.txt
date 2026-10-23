@@ -1,0 +1,12 @@
+conf-dump
+whoami
+cal
+ls
+cd docs
+ls
+cd ..
+cd /home/student
+ls
+cd /
+cd /missing
+whoami test
