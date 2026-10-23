@@ -22,8 +22,12 @@ def main():
     title = f"Эмулятор - [{username}@{hostname}]"
 
     shell = Shell(username, hostname)
-    shell.vfs_path = args.vfs
     shell.script_path = args.script
+
+    try:
+        shell.load_vfs(args.vfs)
+    except ValueError as error:
+        parser.error(str(error))
 
     root = tk.Tk()
     TerminalGUI(root, shell, title)
