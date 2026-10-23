@@ -1,0 +1,15 @@
+conf-dump
+whoami
+cal
+ls
+mkdir projects
+ls
+cd projects
+mkdir test
+ls
+cd ..
+ls
+mkdir projects
+mkdir
+cd /
+cd /missing

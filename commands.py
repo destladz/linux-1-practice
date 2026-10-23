@@ -1,4 +1,3 @@
-
 import calendar
 from datetime import datetime
 
@@ -53,3 +52,13 @@ def command_exit(args: list[str]) -> bool:
         raise ValueError("exit: команда не принимает аргументы")
 
     return True
+
+
+def command_mkdir(args: list[str], vfs, cwd: str = "/") -> str:
+    if len(args) != 1:
+        raise ValueError("mkdir: укажите имя одного каталога")
+
+    if vfs is None:
+        raise ValueError("mkdir: VFS не загружена")
+
+    return vfs.mkdir(args[0], cwd)

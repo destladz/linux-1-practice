@@ -56,3 +56,30 @@ class VirtualFileSystem:
             node = node[part]
 
         return "/" + "/".join(parts), node
+
+    def mkdir(self, path: str, cwd: str = "/") -> str:
+        normalized = path.rstrip("/")
+
+        if not normalized or normalized in (".", ".."):
+            raise ValueError("mkdir: укажите корректное имя каталога")
+
+        parent_path, name = normalized.rsplit("/", 1) if "/" in normalized else (".", normalized)
+
+        if not name or name in (".", ".."):
+            raise ValueError("mkdir: укажите корректное имя каталога")
+
+        if normalized.startswith("/") and not parent_path:
+            parent_path = "/"
+        elif not parent_path:
+            parent_path = "."
+
+        _, parent = self.resolve(parent_path, cwd)
+
+        if not isinstance(parent, dict):
+            raise ValueError(f"mkdir: родительский путь не является каталогом: {parent_path}")
+
+        if name in parent:
+            raise ValueError(f"mkdir: каталог или файл уже существует: {path}")
+
+        parent[name] = {}
+        return f"Каталог создан: {path}"

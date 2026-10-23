@@ -1,12 +1,15 @@
 
 from parser import parse_command
+
 from commands import (
     command_ls,
     command_cd,
     command_cal,
     command_whoami,
+    command_mkdir,
     command_exit,
 )
+
 from vfs import VirtualFileSystem
 
 
@@ -73,6 +76,9 @@ class Shell:
 
             if command == "whoami":
                 return command_whoami(args, self.username), False
+
+            if command == "mkdir":
+                return command_mkdir(args, self.vfs, self.cwd), False
 
             return f"Ошибка: неизвестная команда '{command}'", False
 
