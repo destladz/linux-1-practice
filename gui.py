@@ -1,3 +1,4 @@
+
 import tkinter as tk
 from tkinter import scrolledtext
 
@@ -41,7 +42,11 @@ class TerminalGUI:
 
         self.write("Эмулятор UNIX-подобной оболочки\n")
         self.write("Введите команду. Для выхода используйте exit.\n\n")
-        self.show_prompt()
+
+        if self.shell.script_path:
+            self.root.after(100, self.run_startup_script)
+        else:
+            self.show_prompt()
 
     def write(self, text: str):
         self.output.configure(state=tk.NORMAL)
@@ -51,6 +56,39 @@ class TerminalGUI:
 
     def show_prompt(self):
         self.write(f"{self.shell.prompt} ")
+
+    def run_startup_script(self):
+        try:
+            with open(self.shell.script_path, "r", encoding="utf-8") as file:
+                commands = file.readlines()
+        except OSError as error:
+            self.write(f"Ошибка запуска скрипта: {error}\n")
+            self.show_prompt()
+            return
+
+        for line in commands:
+            command_line = line.strip()
+
+            if not command_line:
+                continue
+
+            self.write(f"{self.shell.prompt} {command_line}\n")
+
+            result, should_exit = self.shell.execute(command_line)
+
+            if result:
+                self.write(result + "\n")
+
+            if should_exit:
+                self.root.after(300, self.root.destroy)
+                self.input.configure(state=tk.DISABLED)
+                return
+
+            if result.startswith("Ошибка:"):
+                self.write("Выполнение стартового скрипта остановлено.\n")
+                break
+
+        self.show_prompt()
 
     def on_enter(self, event=None):
         command_line = self.input.get()

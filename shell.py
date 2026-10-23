@@ -1,3 +1,4 @@
+
 from parser import parse_command
 from commands import command_ls, command_cd, command_exit
 
@@ -7,6 +8,8 @@ class Shell:
         self.username = username
         self.hostname = hostname
         self.cwd = "/"
+        self.vfs_path = "./vfs_data"
+        self.script_path = None
 
         self.commands = {
             "ls": command_ls,
@@ -29,6 +32,16 @@ class Shell:
                 return "Выход из эмулятора.", should_exit
             except ValueError as error:
                 return f"Ошибка: {error}", False
+
+        if command == "conf-dump":
+            if args:
+                return "Ошибка: команда conf-dump не принимает аргументы", False
+
+            return (
+                f"vfs={self.vfs_path}\n"
+                f"script={self.script_path if self.script_path else ''}",
+                False,
+            )
 
         handler = self.commands.get(command)
 
